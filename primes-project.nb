@@ -1,0 +1,1188 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 11.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     50443,       1180]
+NotebookOptionsPosition[     44821,       1088]
+NotebookOutlinePosition[     45209,       1105]
+CellTagsIndexPosition[     45166,       1102]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Prime Sieves Project", "Title",
+ CellChangeTimes->{{3.727740264147788*^9, 3.727740268578574*^9}, {
+   3.728155338693533*^9, 3.7281553454358263`*^9}, 3.72919636839991*^9, {
+   3.729196411466568*^9, 3.729196414930231*^9}, {3.729990101150882*^9, 
+   3.729990142879184*^9}},ExpressionUUID->"cb957777-e1dc-410f-847b-\
+712806b4d7de"],
+
+Cell[TextData[{
+ "In this project we will investigate prime sieves. The point of this project \
+is to generate lists of primes smaller than a given number ",
+ StyleBox["n",
+  FontSlant->"Italic"],
+ ", and do it in the shortest possible time. The two sieves that we will be \
+studying today will be the Sieve of Eratosthenes and Sieve of Sundaram.\n\n\
+After the implementation of each algorithm we will time them for different \
+values of ",
+ StyleBox["n",
+  FontSlant->"Italic"],
+ ", and compare them against each other and decide which one is the faster \
+one. "
+}], "Text",
+ CellChangeTimes->{{3.727740398341977*^9, 3.7277404122428484`*^9}, {
+   3.729196377818172*^9, 3.729196384127762*^9}, {3.729196418924926*^9, 
+   3.729196450779881*^9}, {3.729196491587698*^9, 3.729196516435021*^9}, {
+   3.72919656490914*^9, 3.729196596723991*^9}, {3.7291966538245573`*^9, 
+   3.729196906485301*^9}, {3.7291969576465273`*^9, 3.729196978942054*^9}, 
+   3.729990214091663*^9, {3.729990276776642*^9, 3.729990299631452*^9}, {
+   3.7299903657555513`*^9, 3.729990419041857*^9}, {3.729990479396749*^9, 
+   3.729990673548005*^9}},ExpressionUUID->"98789f35-515f-4648-b124-\
+313172e97e9a"],
+
+Cell[CellGroupData[{
+
+Cell["Sieve of Eratosthenes", "Section",
+ CellChangeTimes->{
+  3.729990687950239*^9},ExpressionUUID->"78dff015-8d11-4698-acde-\
+b1de9501aaad"],
+
+Cell["\<\
+The first sieve we will implement is the sieve of Eratosthenes. The concept \
+behind this sieve is that for each number we encounter starting from 2, we \
+will remove all the numbers all the way to n, that are divisible by 2. Then \
+we will do the same thing for 3, 5 and so on and so forth. 
+What is left will be a list of primes. 
+
+The number of times we will repeat this process will be equal to the square \
+root of n. Since by this point we would have checked all the numbers. 
+Below is a mathematical implementation of this sieve:\
+\>", "Text",
+ CellChangeTimes->{{3.729990695724554*^9, 3.729990720895423*^9}, {
+  3.729990767319276*^9, 3.729990919323483*^9}, {3.7299909733521843`*^9, 
+  3.729991083593748*^9}},ExpressionUUID->"8aa77735-ad50-4f87-9007-\
+dc9676a7095a"],
+
+Cell[BoxData[
+ RowBox[{"\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"eratosthenes2", "[", "n0_", "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"n", "=", "n0"}], "}"}], ",", "\[IndentingNewLine]", 
+     RowBox[{"(*", 
+      RowBox[{
+      "create", " ", "a", " ", "list", " ", "from", " ", "1", " ", "to", " ", 
+       "n"}], "*)"}], "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"list", "=", 
+       RowBox[{"Range", "[", 
+        RowBox[{"1", ",", " ", "n"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{"remove", " ", "one", " ", "from", " ", "the", " ", "list"}], 
+       "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"list", "=", 
+       RowBox[{"Delete", "[", 
+        RowBox[{"list", ",", "1"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{"find", " ", "the", " ", "square", " ", "root"}], "*)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{"n2", " ", "=", " ", 
+       RowBox[{"Floor", "[", 
+        RowBox[{"Sqrt", "[", "n", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+       "go", " ", "from", " ", "1", " ", "to", " ", "the", " ", "square", " ",
+         "root", " ", "of", " ", "n"}], "*)"}], "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"For", "[", 
+        RowBox[{
+         RowBox[{"i", "=", "1"}], ",", 
+         RowBox[{"i", "\[LessEqual]", "n2"}], ",", " ", 
+         RowBox[{"i", "++"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"(*", 
+          RowBox[{
+          "find", " ", "the", " ", "first", " ", "prime", " ", "in", " ", 
+           "the", " ", "list"}], "*)"}], "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"c", "=", 
+           RowBox[{"list", "[", 
+            RowBox[{"[", "1", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+          RowBox[{"(*", 
+           RowBox[{
+           "remove", " ", "all", " ", "the", " ", "elements", " ", "that", 
+            " ", "are", " ", "divisible", " ", "by", " ", "that", " ", 
+            "prime"}], "*)"}], "\[IndentingNewLine]", 
+          RowBox[{"list", "=", 
+           RowBox[{"Select", "[", 
+            RowBox[{"list", ",", " ", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"Mod", "[", 
+                RowBox[{"#", ",", 
+                 RowBox[{"i", "+", "1"}]}], "]"}], "\[NotEqual]", "0"}], 
+              "&"}]}], "]"}]}], ";", "\[IndentingNewLine]", 
+          RowBox[{"(*", 
+           RowBox[{
+           "add", " ", "this", " ", "element", " ", "back", " ", "to", " ", 
+            "the", " ", "list", " ", "since", " ", "it", " ", "was", " ", 
+            "removed"}], "*)"}], "\[IndentingNewLine]", 
+          RowBox[{"list", "=", 
+           RowBox[{"AppendTo", "[", 
+            RowBox[{"list", ",", "c"}], "]"}]}], ";"}]}], 
+        "\[IndentingNewLine]", "]"}], "\[IndentingNewLine]", 
+       RowBox[{"Sort", "[", 
+        RowBox[{"DeleteDuplicates", "[", "list", "]"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{
+        "sort", " ", "the", " ", "list", " ", "and", " ", "delete", " ", 
+         "any", " ", "duplicates"}], ",", " ", 
+        RowBox[{
+        "this", " ", "happens", " ", "for", " ", "some", " ", "values", " ", 
+         "of", " ", 
+         StyleBox["c",
+          FontSlant->"Italic"]}]}], "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"list2", " ", "=", 
+       RowBox[{"Sort", "[", 
+        RowBox[{"DeleteDuplicates", "[", "list", "]"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{"return", " ", "the", " ", "list", " ", "of", " ", "primes"}], 
+       "*)"}], "\[IndentingNewLine]", "list2"}]}], "\[IndentingNewLine]", 
+    "]"}]}]}]], "Input",
+ CellChangeTimes->{{3.729991086956766*^9, 3.7299913468038607`*^9}, {
+  3.729991497138812*^9, 
+  3.729991497749877*^9}},ExpressionUUID->"053bf5df-8255-4532-ab07-\
+5d143c36a120"],
+
+Cell["Now let\[CloseCurlyQuote]s see if our function works for a couple of \
+values:", "Text",
+ CellChangeTimes->{{3.7299913632996883`*^9, 
+  3.7299913764333887`*^9}},ExpressionUUID->"8e403f66-23bb-44f1-be65-\
+dd707350a43f"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"eratosthenes2", "[", "10", "]"}], "\[IndentingNewLine]", 
+ RowBox[{"eratosthenes2", "[", "100", "]"}], "\[IndentingNewLine]", 
+ RowBox[{"eratosthenes2", "[", "200", "]"}]}], "Input",
+ CellChangeTimes->{{3.7299913780885572`*^9, 3.7299914059904633`*^9}, {
+  3.729991515318179*^9, 
+  3.729991535932323*^9}},ExpressionUUID->"92d46102-d411-49df-8715-\
+d053626569a8"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{"2", ",", "3", ",", "5", ",", "7"}], "}"}]], "Output",
+ CellChangeTimes->{{3.729991510920455*^9, 3.729991536456532*^9}, 
+   3.73004439031504*^9, 
+   3.7300449456816607`*^9},ExpressionUUID->"30b2a149-46e9-4bb7-8919-\
+fd6cd5f369fa"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+  "2", ",", "3", ",", "5", ",", "7", ",", "11", ",", "13", ",", "17", ",", 
+   "19", ",", "23", ",", "29", ",", "31", ",", "37", ",", "41", ",", "43", 
+   ",", "47", ",", "53", ",", "59", ",", "61", ",", "67", ",", "71", ",", 
+   "73", ",", "79", ",", "83", ",", "89", ",", "97"}], "}"}]], "Output",
+ CellChangeTimes->{{3.729991510920455*^9, 3.729991536456532*^9}, 
+   3.73004439031504*^9, 
+   3.7300449457016563`*^9},ExpressionUUID->"ea0be6c9-56cb-4c07-9d2d-\
+1963edacdffe"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+  "2", ",", "3", ",", "5", ",", "7", ",", "11", ",", "13", ",", "17", ",", 
+   "19", ",", "23", ",", "29", ",", "31", ",", "37", ",", "41", ",", "43", 
+   ",", "47", ",", "53", ",", "59", ",", "61", ",", "67", ",", "71", ",", 
+   "73", ",", "79", ",", "83", ",", "89", ",", "97", ",", "101", ",", "103", 
+   ",", "107", ",", "109", ",", "113", ",", "127", ",", "131", ",", "137", 
+   ",", "139", ",", "149", ",", "151", ",", "157", ",", "163", ",", "167", 
+   ",", "173", ",", "179", ",", "181", ",", "191", ",", "193", ",", "197", 
+   ",", "199"}], "}"}]], "Output",
+ CellChangeTimes->{{3.729991510920455*^9, 3.729991536456532*^9}, 
+   3.73004439031504*^9, 
+   3.730044945717486*^9},ExpressionUUID->"fbd51aae-112d-4ad0-88d7-\
+dc3c3980538b"]
+}, Open  ]],
+
+Cell["\<\
+As we see it works pretty well so now let\[CloseCurlyQuote]s build a timing \
+function that we will be using later. 
+This function will find calculate how much time it takes to calculate 2^n.  \
+\>", "Text",
+ CellChangeTimes->{{3.729991544715858*^9, 3.7299915555736837`*^9}, {
+  3.729991599459697*^9, 3.7299916114228*^9}, {3.7299916584066343`*^9, 
+  3.72999168668889*^9}},ExpressionUUID->"abb52e14-f29d-42d3-aad8-\
+ff73a087c36a"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"t1", "[", "n_", "]"}], ":=", 
+   RowBox[{
+    RowBox[{"Timing", "[", 
+     RowBox[{"eratosthenes2", "[", 
+      RowBox[{"2", "^", "n"}], "]"}], "]"}], "[", 
+    RowBox[{"[", "1", "]"}], "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.729991648535771*^9, 
+  3.7299916486055117`*^9}},ExpressionUUID->"0d2f63ff-8724-410d-8139-\
+179e5eb53797"],
+
+Cell["Let\[CloseCurlyQuote]s now try if this function works:", "Text",
+ CellChangeTimes->{{3.729991694635891*^9, 
+  3.729991701997815*^9}},ExpressionUUID->"3f790129-d6fc-4a9d-81a4-\
+9257fa6954a4"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"t1", "[", "5", "]"}], "\[IndentingNewLine]", 
+ RowBox[{"t1", "[", "10", "]"}], "\[IndentingNewLine]", 
+ RowBox[{"t1", "[", "15", "]"}]}], "Input",
+ CellChangeTimes->{{3.729991703854207*^9, 
+  3.729991724875414*^9}},ExpressionUUID->"ac597155-6f69-4254-9ccd-\
+a511bad47be4"],
+
+Cell[BoxData["0.00027`"], "Output",
+ CellChangeTimes->{3.729991725662896*^9, 3.730044396397694*^9, 
+  3.730044951336091*^9},ExpressionUUID->"86424d91-a2c9-41b7-a3d6-\
+b05f72c04ce9"],
+
+Cell[BoxData["0.009933`"], "Output",
+ CellChangeTimes->{3.729991725662896*^9, 3.730044396397694*^9, 
+  3.7300449513533907`*^9},ExpressionUUID->"156459d8-fd2a-4b99-a75c-\
+9aa46cf3c140"],
+
+Cell[BoxData["0.80775`"], "Output",
+ CellChangeTimes->{3.729991725662896*^9, 3.730044396397694*^9, 
+  3.730044952126946*^9},ExpressionUUID->"ace6f2fa-9438-4f83-b156-\
+35c8bd359b5e"]
+}, Open  ]],
+
+Cell["\<\
+This works really well so now we can go on to build the sieve of Sunduram and \
+in the end we will compare their run times. \
+\>", "Text",
+ CellChangeTimes->{{3.729991735702113*^9, 3.7299917551992617`*^9}, {
+  3.729991799252955*^9, 
+  3.729991818055088*^9}},ExpressionUUID->"9ed95b10-64d9-467f-aa61-\
+9c9d2595f96b"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Sieve of Sunduram", "Section",
+ CellChangeTimes->{{3.729991831036119*^9, 
+  3.729991837356347*^9}},ExpressionUUID->"d42ea2e6-e01f-4886-904d-\
+a1e1762f51bc"],
+
+Cell[TextData[{
+ "This sieve accomplishes almost the same thing as the sieve of Eratosthenes. \
+It gives us all the odd primes up to 2",
+ StyleBox["n",
+  FontSlant->"Italic"],
+ "+1 where ",
+ StyleBox["n",
+  FontSlant->"Italic"],
+ " is the input. \n\nSieve of Sunduram will will remove all the numbers with \
+indexes ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"i", " ", "+", " ", "j", " ", "+", " ", 
+    RowBox[{"2", " ", "i", " ", "j"}]}], TraditionalForm]],
+  FormatType->"TraditionalForm",ExpressionUUID->
+  "1546e55f-e84a-4f15-b736-c50a2cf08355"],
+ ", where ",
+ StyleBox["i",
+  FontSlant->"Italic"],
+ " and ",
+ StyleBox["j ",
+  FontSlant->"Italic"],
+ "are  This will remove all the composite numbers and everything that is left \
+will be multiplied by 2 and added 1. And this will give us all the odd prime \
+numbers. \n\nBelow there is the mathematical implementation. "
+}], "Text",
+ CellChangeTimes->{{3.729991841532052*^9, 3.72999185665587*^9}, {
+  3.729991991341522*^9, 3.729992036078652*^9}, {3.729993236531434*^9, 
+  3.729993251177918*^9}, {3.729993321159074*^9, 3.729993496700829*^9}, {
+  3.7299935635228252`*^9, 3.729993601990692*^9}, {3.729993940393537*^9, 
+  3.7299939613050327`*^9}},ExpressionUUID->"96cb0077-bf4f-4f03-904f-\
+ffacc42de509"],
+
+Cell[BoxData[
+ RowBox[{"\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"sunduram", "[", "n0_", "]"}], ":=", 
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"n", "=", "n0"}], "}"}], ",", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+       "create", " ", "a", " ", "list", " ", "from", " ", "1", " ", "to", " ",
+         "n"}], "*)"}], "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"l1", " ", "=", " ", 
+        RowBox[{"Range", "[", 
+         RowBox[{"1", ",", "n"}], "]"}]}], ";", " ", "\[IndentingNewLine]", 
+       RowBox[{"(*", 
+        RowBox[{
+        "create", " ", "an", " ", "empty", " ", "list", " ", "to", " ", 
+         "store", " ", "all", " ", "the", " ", "elements", " ", "that", " ", 
+         "were", " ", "removed"}], "*)"}], "\[IndentingNewLine]", 
+       RowBox[{"l2", "=", 
+        RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]", 
+       "\[IndentingNewLine]", 
+       RowBox[{"(*", 
+        RowBox[{
+        "let", " ", "i", " ", "go", " ", "from", " ", "1", " ", "to", " ", 
+         "j"}], "*)"}], "\[IndentingNewLine]", 
+       RowBox[{"For", "[", 
+        RowBox[{
+         RowBox[{"i", "=", "1"}], ",", 
+         RowBox[{"i", "\[LessEqual]", "j"}], ",", 
+         RowBox[{"i", "++"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"(*", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"let", " ", "j"}], "=", "i"}], ",", " ", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"and", " ", "go", " ", "until", " ", "i"}], "+", "j", 
+             "+", 
+             RowBox[{"2", "*", "i", "*", "j"}]}], "\[LessEqual]", "n"}]}], 
+          "*)"}], "\[IndentingNewLine]", 
+         RowBox[{"For", "[", 
+          RowBox[{
+           RowBox[{"j", "=", "i"}], ",", 
+           RowBox[{
+            RowBox[{"i", "+", "j", "+", 
+             RowBox[{"2", "*", "i", "*", "j"}]}], "\[LessEqual]", "n"}], ",", 
+           RowBox[{"j", "++"}], ",", " ", "\[IndentingNewLine]", 
+           RowBox[{"(*", 
+            RowBox[{
+            "add", " ", "to", " ", "the", " ", "l2", " ", "all", " ", 
+             "elements", " ", "that", " ", "were", " ", "removed"}], "*)"}], 
+           "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{"AppendTo", "[", 
+             RowBox[{"l2", ",", 
+              RowBox[{"l1", "[", 
+               RowBox[{"[", 
+                RowBox[{"i", "+", "j", "+", 
+                 RowBox[{"2", "*", "i", "*", "j"}]}], "]"}], "]"}]}], "]"}], 
+            ";"}]}], "\[IndentingNewLine]", "]"}]}], "\[IndentingNewLine]", 
+        "]"}], ";", "\[IndentingNewLine]", 
+       RowBox[{"(*", 
+        RowBox[{
+        "find", " ", "all", " ", "the", " ", "elements", " ", "of", " ", "l1",
+          " ", "that", " ", "are", " ", "not", " ", "in", " ", "l2"}], "*)"}],
+        "\[IndentingNewLine]", 
+       RowBox[{"l1", " ", "=", " ", 
+        RowBox[{"Complement", "[", 
+         RowBox[{"l1", ",", "l2"}], "]"}]}], ";", "\[IndentingNewLine]", 
+       RowBox[{"(*", 
+        RowBox[{
+        "multiply", " ", "all", " ", "elements", " ", "of", " ", "a", " ", 
+         "list", " ", "by", " ", "2", " ", "and", " ", "add", " ", "1"}], 
+        "*)"}], "\[IndentingNewLine]", 
+       RowBox[{"l1", " ", "=", " ", 
+        RowBox[{
+         RowBox[{"l1", "*", "2"}], "+", "1"}]}], ";", "\[IndentingNewLine]", 
+       RowBox[{"(*", 
+        RowBox[{"return", " ", "the", " ", "list"}], "*)"}], 
+       "\[IndentingNewLine]", "l1"}]}], "]"}]}], ";"}]}]], "Input",
+ CellChangeTimes->{{3.729986968206608*^9, 3.7299869745202312`*^9}, {
+  3.729987113584551*^9, 3.729987135012385*^9}, {3.72998718614637*^9, 
+  3.729987203836219*^9}, {3.729987409478065*^9, 3.729987435308326*^9}, {
+  3.7299874788395643`*^9, 3.729987586450625*^9}, {3.729987616848956*^9, 
+  3.729987710641508*^9}, {3.7299877409767237`*^9, 3.729987829486271*^9}, {
+  3.7299878885323277`*^9, 3.7299878989580107`*^9}, {3.7299879367919083`*^9, 
+  3.7299880191790733`*^9}, {3.729988091211089*^9, 3.7299881144818897`*^9}, {
+  3.729993503626912*^9, 3.729993557284411*^9}, {3.729993708205632*^9, 
+  3.729993845219026*^9}},ExpressionUUID->"38003271-bd76-4be7-b784-\
+a88b687c468a"],
+
+Cell["Now let\[CloseCurlyQuote]s try and see if our function works:", "Text",
+ CellChangeTimes->{{3.7299938639177628`*^9, 
+  3.7299938997298527`*^9}},ExpressionUUID->"177e35b3-b2f7-4991-817d-\
+afd55ff3ced8"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"sunduram", "[", "10", "]"}], "\[IndentingNewLine]", 
+ RowBox[{"sunduram", "[", "200", "]"}]}], "Input",
+ CellChangeTimes->{{3.729993903161325*^9, 3.7299939169187307`*^9}, {
+  3.729993969175726*^9, 3.729993969324037*^9}, {3.730044484098186*^9, 
+  3.730044498576252*^9}, {3.730044823834976*^9, 
+  3.730044827239914*^9}},ExpressionUUID->"fa8bbe3e-4654-4e9e-8c23-\
+914563dd97e4"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+  "3", ",", "5", ",", "7", ",", "9", ",", "11", ",", "13", ",", "15", ",", 
+   "17", ",", "19", ",", "21"}], "}"}]], "Output",
+ CellChangeTimes->{
+  3.729993918275917*^9, 3.7299939701949997`*^9, 3.7300444071446123`*^9, 
+   3.730044440508305*^9, {3.730044489255252*^9, 3.730044499408585*^9}, 
+   3.7300448336617393`*^9, 
+   3.730044964082658*^9},ExpressionUUID->"ca92b0dd-8690-4d48-959b-\
+d36fec950cb3"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+  "3", ",", "5", ",", "7", ",", "9", ",", "11", ",", "13", ",", "15", ",", 
+   "17", ",", "19", ",", "21", ",", "23", ",", "25", ",", "27", ",", "29", 
+   ",", "31", ",", "33", ",", "35", ",", "37", ",", "39", ",", "41", ",", 
+   "43", ",", "45", ",", "47", ",", "49", ",", "51", ",", "53", ",", "55", 
+   ",", "57", ",", "59", ",", "61", ",", "63", ",", "65", ",", "67", ",", 
+   "69", ",", "71", ",", "73", ",", "75", ",", "77", ",", "79", ",", "81", 
+   ",", "83", ",", "85", ",", "87", ",", "89", ",", "91", ",", "93", ",", 
+   "95", ",", "97", ",", "99", ",", "101", ",", "103", ",", "105", ",", "107",
+    ",", "109", ",", "111", ",", "113", ",", "115", ",", "117", ",", "119", 
+   ",", "121", ",", "123", ",", "125", ",", "127", ",", "129", ",", "131", 
+   ",", "133", ",", "135", ",", "137", ",", "139", ",", "141", ",", "143", 
+   ",", "145", ",", "147", ",", "149", ",", "151", ",", "153", ",", "155", 
+   ",", "157", ",", "159", ",", "161", ",", "163", ",", "165", ",", "167", 
+   ",", "169", ",", "171", ",", "173", ",", "175", ",", "177", ",", "179", 
+   ",", "181", ",", "183", ",", "185", ",", "187", ",", "189", ",", "191", 
+   ",", "193", ",", "195", ",", "197", ",", "199", ",", "201", ",", "203", 
+   ",", "205", ",", "207", ",", "209", ",", "211", ",", "213", ",", "215", 
+   ",", "217", ",", "219", ",", "221", ",", "223", ",", "225", ",", "227", 
+   ",", "229", ",", "231", ",", "233", ",", "235", ",", "237", ",", "239", 
+   ",", "241", ",", "243", ",", "245", ",", "247", ",", "249", ",", "251", 
+   ",", "253", ",", "255", ",", "257", ",", "259", ",", "261", ",", "263", 
+   ",", "265", ",", "267", ",", "269", ",", "271", ",", "273", ",", "275", 
+   ",", "277", ",", "279", ",", "281", ",", "283", ",", "285", ",", "287", 
+   ",", "289", ",", "291", ",", "293", ",", "295", ",", "297", ",", "299", 
+   ",", "301", ",", "303", ",", "305", ",", "307", ",", "309", ",", "311", 
+   ",", "313", ",", "315", ",", "317", ",", "319", ",", "321", ",", "323", 
+   ",", "325", ",", "327", ",", "329", ",", "331", ",", "333", ",", "335", 
+   ",", "337", ",", "339", ",", "341", ",", "343", ",", "345", ",", "347", 
+   ",", "349", ",", "351", ",", "353", ",", "355", ",", "357", ",", "359", 
+   ",", "361", ",", "363", ",", "365", ",", "367", ",", "369", ",", "371", 
+   ",", "373", ",", "375", ",", "377", ",", "379", ",", "381", ",", "383", 
+   ",", "385", ",", "387", ",", "389", ",", "391", ",", "393", ",", "395", 
+   ",", "397", ",", "399", ",", "401"}], "}"}]], "Output",
+ CellChangeTimes->{
+  3.729993918275917*^9, 3.7299939701949997`*^9, 3.7300444071446123`*^9, 
+   3.730044440508305*^9, {3.730044489255252*^9, 3.730044499408585*^9}, 
+   3.7300448336617393`*^9, 
+   3.730044964102145*^9},ExpressionUUID->"14efca6b-2bad-4f95-a494-\
+19931bea9554"]
+}, Open  ]],
+
+Cell[TextData[{
+ "This seems to be working well. Now let\[CloseCurlyQuote]s build a timing \
+function that we will need when comparing the two algorithms. \n\nThis \
+function takes a number ",
+ StyleBox["n",
+  FontSlant->"Italic"],
+ ", and calculates how much time it takes to generate numbers up to 2^",
+ StyleBox["n",
+  FontSlant->"Italic"],
+ "."
+}], "Text",
+ CellChangeTimes->{{3.72999398987904*^9, 
+  3.7299940636794252`*^9}},ExpressionUUID->"d6f0aeaa-c22e-4d50-a31a-\
+98029734e97f"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"t2", "[", "n_", "]"}], ":=", 
+   RowBox[{
+    RowBox[{"Timing", "[", 
+     RowBox[{"sunduram", "[", 
+      RowBox[{"2", "^", "n"}], "]"}], "]"}], "[", 
+    RowBox[{"[", "1", "]"}], "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{
+  3.7299881327066402`*^9, {3.72998907782451*^9, 3.7299890963964167`*^9}, {
+   3.72999385880892*^9, 
+   3.72999385896622*^9}},ExpressionUUID->"af381833-739e-4057-bffd-\
+c8ca9c44793f"],
+
+Cell["Now let\[CloseCurlyQuote]s try and see if this works. ", "Text",
+ CellChangeTimes->{{3.7299940860273046`*^9, 
+  3.729994095834587*^9}},ExpressionUUID->"6da30e1e-47db-4004-8685-\
+40e897a3f611"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"t2", "[", "5", "]"}], "\[IndentingNewLine]", 
+ RowBox[{"t2", "[", "10", "]"}], "\[IndentingNewLine]", 
+ RowBox[{"t2", "[", "14", "]"}]}], "Input",
+ CellChangeTimes->{{3.729994101680245*^9, 
+  3.729994143528551*^9}},ExpressionUUID->"52f910c6-7824-499b-b91b-\
+87e081a7702c"],
+
+Cell[BoxData["0.000075`"], "Output",
+ CellChangeTimes->{{3.729994116241819*^9, 3.729994149283216*^9}, {
+   3.7300444218839703`*^9, 3.730044444728361*^9}, 3.730044843103457*^9, 
+   3.7300449723076487`*^9},ExpressionUUID->"d1219ab8-b589-4dc4-91f2-\
+65f9c881e465"],
+
+Cell[BoxData["0.000125`"], "Output",
+ CellChangeTimes->{{3.729994116241819*^9, 3.729994149283216*^9}, {
+   3.7300444218839703`*^9, 3.730044444728361*^9}, 3.730044843103457*^9, 
+   3.7300449723255243`*^9},ExpressionUUID->"a3c73142-25dd-4ea3-a1ac-\
+1094f0af2258"],
+
+Cell[BoxData["0.002885`"], "Output",
+ CellChangeTimes->{{3.729994116241819*^9, 3.729994149283216*^9}, {
+   3.7300444218839703`*^9, 3.730044444728361*^9}, 3.730044843103457*^9, 
+   3.730044972337501*^9},ExpressionUUID->"f73627ed-7e39-4b40-bf99-\
+7d7229700fbd"]
+}, Open  ]],
+
+Cell["\<\
+Function seems to be running alright. And now we can go ahead with the \
+comparison of the running times. \
+\>", "Text",
+ CellChangeTimes->{{3.729994156862856*^9, 
+  3.729994178875332*^9}},ExpressionUUID->"2efcc06b-bf94-4562-a7df-\
+f71ee776b937"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Comparing the running times", "Section",
+ CellChangeTimes->{{3.729994187108983*^9, 
+  3.729994191438959*^9}},ExpressionUUID->"4feca245-44f5-4594-8ab4-\
+2acc12cf057e"],
+
+Cell[TextData[{
+ "Now let\[CloseCurlyQuote]s go ahead and try to compare those two algorithms \
+together. We have two timing algorithms and now all we need to do is to see \
+how the times compare. \n\nLet\[CloseCurlyQuote]s first plot the how much it \
+takes for the sieve of Eratosthenes for ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["2", "5"], TraditionalForm]],
+  FormatType->"TraditionalForm",ExpressionUUID->
+  "7960c843-4ff6-4870-96e1-72e07ce50249"],
+ "all the way to ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["2", "15"], TraditionalForm]],
+  FormatType->"TraditionalForm",ExpressionUUID->
+  "3270772e-dc86-4578-9049-53818d98f9b6"],
+ ". "
+}], "Text",
+ CellChangeTimes->{{3.729994199567148*^9, 3.729994274182046*^9}, {
+  3.729994383996663*^9, 
+  3.729994447787575*^9}},ExpressionUUID->"b90c3925-3f8b-4baf-93de-\
+50c9409ea1de"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", 
+   RowBox[{"list", " ", "of", " ", "n"}], "*)"}], "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"mylist", "=", 
+     RowBox[{"Range", "[", 
+      RowBox[{"5", ",", "15"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"timingEratosthenes", " ", "=", " ", 
+     RowBox[{"Map", "[", 
+      RowBox[{"t1", ",", "mylist"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{"ListPlot", "[", "timingEratosthenes", "]"}]}]}]], "Input",
+ CellChangeTimes->{{3.729989106146096*^9, 3.729989117469413*^9}, {
+   3.729989165966197*^9, 3.7299891798866043`*^9}, {3.7299892254417*^9, 
+   3.729989242741588*^9}, {3.729994280926242*^9, 3.729994317693583*^9}, 
+   3.729994370322723*^9, {3.7299944548321657`*^9, 
+   3.729994455335911*^9}},ExpressionUUID->"21b24abc-5bfe-4d71-b934-\
+1a7c95ba68f4"],
+
+Cell[BoxData[
+ GraphicsBox[{{}, {{}, 
+    {RGBColor[0.368417, 0.506779, 0.709798], PointSize[0.012833333333333334`],
+      AbsoluteThickness[1.6], 
+     PointBox[{{1., 0.0005}, {2., 0.000342}, {3., 0.000744}, {4., 0.001744}, {
+      5., 0.003947}, {6., 0.0105}, {7., 0.021572}, {8., 0.049152}, {9., 
+      0.119157}, {10., 0.302763}, {11., 0.86526}}]}, {}}, {}, {}, {}, {}},
+  AspectRatio->NCache[GoldenRatio^(-1), 0.6180339887498948],
+  Axes->{True, True},
+  AxesLabel->{None, None},
+  AxesOrigin->{0., 0},
+  DisplayFunction->Identity,
+  Frame->{{False, False}, {False, False}},
+  FrameLabel->{{None, None}, {None, None}},
+  FrameTicks->{{Automatic, Automatic}, {Automatic, Automatic}},
+  GridLines->{None, None},
+  GridLinesStyle->Directive[
+    GrayLevel[0.5, 0.4]],
+  ImagePadding->All,
+  Method->{"CoordinatesToolOptions" -> {"DisplayFunction" -> ({
+        (Identity[#]& )[
+         Part[#, 1]], 
+        (Identity[#]& )[
+         Part[#, 2]]}& ), "CopiedValueFunction" -> ({
+        (Identity[#]& )[
+         Part[#, 1]], 
+        (Identity[#]& )[
+         Part[#, 2]]}& )}},
+  PlotRange->{{0., 11.}, {0, 0.86526}},
+  PlotRangeClipping->True,
+  PlotRangePadding->{{
+     Scaled[0.02], 
+     Scaled[0.02]}, {
+     Scaled[0.02], 
+     Scaled[0.05]}},
+  Ticks->{Automatic, Automatic}]], "Output",
+ CellChangeTimes->{3.729994338700893*^9, 3.729994373655818*^9, 
+  3.729994457532113*^9, 3.730044456018386*^9, 
+  3.730044978843014*^9},ExpressionUUID->"3367d5f3-d549-46cd-a158-\
+e6e293c255a9"]
+}, Open  ]],
+
+Cell["Now let\[CloseCurlyQuote]s do the same thing for the sieve of \
+Sunduram", "Text",
+ CellChangeTimes->{{3.729994466313184*^9, 
+  3.729994494102305*^9}},ExpressionUUID->"96a288f1-dc96-48cf-93e7-\
+c4dfc3be19a2"],
+
+Cell[BoxData[
+ RowBox[{" ", 
+  RowBox[{
+   RowBox[{"timingSunduram", "=", " ", 
+    RowBox[{"Map", "[", 
+     RowBox[{"t2", ",", "mylist"}], "]"}]}], ";"}]}]], "Input",
+ CellChangeTimes->{{3.729994516484482*^9, 3.729994521716546*^9}, {
+  3.7299945628220673`*^9, 
+  3.729994568929336*^9}},ExpressionUUID->"df1a608c-9967-4f15-9170-\
+5d0c761f4cf6"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ListPlot", "[", "timingSunduram", "]"}]], "Input",
+ CellChangeTimes->{{3.729989570156303*^9, 3.7299895706615543`*^9}, {
+  3.729994557714223*^9, 
+  3.729994567029615*^9}},ExpressionUUID->"ac7cad6b-5640-4be4-b2fd-\
+6e80ce25b814"],
+
+Cell[BoxData[
+ GraphicsBox[{{}, {{}, 
+    {RGBColor[0.368417, 0.506779, 0.709798], PointSize[0.012833333333333334`],
+      AbsoluteThickness[1.6], 
+     PointBox[{{1., 0.000078}, {2., 0.000055}, {3., 0.000077}, {4., 
+      0.000069}, {5., 0.000068}, {6., 0.000107}, {7., 0.000248}, {8., 
+      0.000524}, {9., 0.001226}, {10., 0.002449}, {11., 
+      0.005679}}]}, {}}, {}, {}, {}, {}},
+  AspectRatio->NCache[GoldenRatio^(-1), 0.6180339887498948],
+  Axes->{True, True},
+  AxesLabel->{None, None},
+  AxesOrigin->{0., 0},
+  DisplayFunction->Identity,
+  Frame->{{False, False}, {False, False}},
+  FrameLabel->{{None, None}, {None, None}},
+  FrameTicks->{{Automatic, Automatic}, {Automatic, Automatic}},
+  GridLines->{None, None},
+  GridLinesStyle->Directive[
+    GrayLevel[0.5, 0.4]],
+  ImagePadding->All,
+  Method->{"CoordinatesToolOptions" -> {"DisplayFunction" -> ({
+        (Identity[#]& )[
+         Part[#, 1]], 
+        (Identity[#]& )[
+         Part[#, 2]]}& ), "CopiedValueFunction" -> ({
+        (Identity[#]& )[
+         Part[#, 1]], 
+        (Identity[#]& )[
+         Part[#, 2]]}& )}},
+  PlotRange->{{0., 11.}, {0, 0.005679}},
+  PlotRangeClipping->True,
+  PlotRangePadding->{{
+     Scaled[0.02], 
+     Scaled[0.02]}, {
+     Scaled[0.02], 
+     Scaled[0.05]}},
+  Ticks->{Automatic, Automatic}]], "Output",
+ CellChangeTimes->{
+  3.72999457129146*^9, 3.730044464886085*^9, {3.73004498580136*^9, 
+   3.7300449913456993`*^9}},ExpressionUUID->"46937c66-dd69-4832-b3e4-\
+5ed552e546b7"]
+}, Open  ]],
+
+Cell["\<\
+This seems to be faster but let\[CloseCurlyQuote]s graph them together and \
+see the difference. \
+\>", "Text",
+ CellChangeTimes->{{3.72999458633554*^9, 3.729994605498734*^9}, {
+  3.730044530587253*^9, 
+  3.73004454425858*^9}},ExpressionUUID->"2c30ff48-bd92-44cf-a6f6-\
+e36738072f86"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ListLinePlot", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"timingSunduram", ",", "timingEratosthenes"}], "}"}], ",", 
+   RowBox[{"PlotLegends", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{"\"\<Sunduram\>\"", ",", "\"\<Eratosthenes\>\""}], "}"}]}]}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.72999463051963*^9, 
+  3.729994655648193*^9}},ExpressionUUID->"ac3eac15-e0d2-46da-9ca6-\
+cb8d96d9c3d0"],
+
+Cell[BoxData[
+ TemplateBox[{GraphicsBox[{{}, {{{}, {}, {
+        Hue[0.67, 0.6, 0.6], 
+        Directive[
+         PointSize[0.019444444444444445`], 
+         RGBColor[0.368417, 0.506779, 0.709798], 
+         AbsoluteThickness[1.6]], 
+        LineBox[{{1., 0.000078}, {2., 0.000055}, {3., 0.000077}, {4., 
+         0.000069}, {5., 0.000068}, {6., 0.000107}, {7., 0.000248}, {8., 
+         0.000524}, {9., 0.001226}, {10., 0.002449}, {11., 0.005679}}]}, {
+        Hue[0.9060679774997897, 0.6, 0.6], 
+        Directive[
+         PointSize[0.019444444444444445`], 
+         RGBColor[0.880722, 0.611041, 0.142051], 
+         AbsoluteThickness[1.6]], 
+        LineBox[{{1., 0.0005}, {2., 0.000342}, {3., 0.000744}, {4., 
+         0.001744}, {5., 0.003947}, {6., 0.0105}, {7., 0.021572}, {8., 
+         0.049152}, {9., 0.119157}, {9.019648050717297, 
+         0.1227645}}]}}}, {}, {}, {}, {}}, {
+    DisplayFunction -> Identity, PlotRangePadding -> {{
+        Scaled[0.02], 
+        Scaled[0.02]}, {
+        Scaled[0.02], 
+        Scaled[0.05]}}, AxesOrigin -> {0., 0}, 
+     PlotRange -> {{0., 11.}, {0, 0.1227645}}, PlotRangeClipping -> True, 
+     ImagePadding -> All, DisplayFunction -> Identity, AspectRatio -> 
+     NCache[GoldenRatio^(-1), 0.6180339887498948], Axes -> {True, True}, 
+     AxesLabel -> {None, None}, AxesOrigin -> {0., 0}, DisplayFunction :> 
+     Identity, Frame -> {{False, False}, {False, False}}, 
+     FrameLabel -> {{None, None}, {None, None}}, 
+     FrameTicks -> {{Automatic, Automatic}, {Automatic, Automatic}}, 
+     GridLines -> {None, None}, GridLinesStyle -> Directive[
+       GrayLevel[0.5, 0.4]], 
+     Method -> {"CoordinatesToolOptions" -> {"DisplayFunction" -> ({
+           (Identity[#]& )[
+            Part[#, 1]], 
+           (Identity[#]& )[
+            Part[#, 2]]}& ), "CopiedValueFunction" -> ({
+           (Identity[#]& )[
+            Part[#, 1]], 
+           (Identity[#]& )[
+            Part[#, 2]]}& )}}, PlotRange -> {{0., 11.}, {0, 0.1227645}}, 
+     PlotRangeClipping -> True, PlotRangePadding -> {{
+        Scaled[0.02], 
+        Scaled[0.02]}, {
+        Scaled[0.02], 
+        Scaled[0.05]}}, Ticks -> {Automatic, Automatic}}],FormBox[
+    FormBox[
+     TemplateBox[{"\"Sunduram\"", "\"Eratosthenes\""}, "LineLegend", 
+      DisplayFunction -> (FormBox[
+        StyleBox[
+         StyleBox[
+          PaneBox[
+           TagBox[
+            GridBox[{{
+               TagBox[
+                GridBox[{{
+                   GraphicsBox[{{
+                    Directive[
+                    EdgeForm[
+                    Directive[
+                    Opacity[0.3], 
+                    GrayLevel[0]]], 
+                    PointSize[0.35], 
+                    RGBColor[0.368417, 0.506779, 0.709798], 
+                    AbsoluteThickness[1.6]], {
+                    LineBox[{{0, 10}, {20, 10}}]}}, {
+                    Directive[
+                    EdgeForm[
+                    Directive[
+                    Opacity[0.3], 
+                    GrayLevel[0]]], 
+                    PointSize[0.35], 
+                    RGBColor[0.368417, 0.506779, 0.709798], 
+                    AbsoluteThickness[1.6]], {}}}, AspectRatio -> Full, 
+                    ImageSize -> {20, 10}, PlotRangePadding -> None, 
+                    ImagePadding -> Automatic, 
+                    BaselinePosition -> (Scaled[0.1] -> Baseline)], #}, {
+                   GraphicsBox[{{
+                    Directive[
+                    EdgeForm[
+                    Directive[
+                    Opacity[0.3], 
+                    GrayLevel[0]]], 
+                    PointSize[0.35], 
+                    RGBColor[0.880722, 0.611041, 0.142051], 
+                    AbsoluteThickness[1.6]], {
+                    LineBox[{{0, 10}, {20, 10}}]}}, {
+                    Directive[
+                    EdgeForm[
+                    Directive[
+                    Opacity[0.3], 
+                    GrayLevel[0]]], 
+                    PointSize[0.35], 
+                    RGBColor[0.880722, 0.611041, 0.142051], 
+                    AbsoluteThickness[1.6]], {}}}, AspectRatio -> Full, 
+                    ImageSize -> {20, 10}, PlotRangePadding -> None, 
+                    ImagePadding -> Automatic, 
+                    BaselinePosition -> (Scaled[0.1] -> Baseline)], #2}}, 
+                 GridBoxAlignment -> {
+                  "Columns" -> {Center, Left}, "Rows" -> {{Baseline}}}, 
+                 AutoDelete -> False, 
+                 GridBoxDividers -> {
+                  "Columns" -> {{False}}, "Rows" -> {{False}}}, 
+                 GridBoxItemSize -> {"Columns" -> {{All}}, "Rows" -> {{All}}},
+                  GridBoxSpacings -> {
+                  "Columns" -> {{0.5}}, "Rows" -> {{0.8}}}], "Grid"]}}, 
+             GridBoxAlignment -> {"Columns" -> {{Left}}, "Rows" -> {{Top}}}, 
+             AutoDelete -> False, 
+             GridBoxItemSize -> {
+              "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}, 
+             GridBoxSpacings -> {"Columns" -> {{1}}, "Rows" -> {{0}}}], 
+            "Grid"], Alignment -> Left, AppearanceElements -> None, 
+           ImageMargins -> {{5, 5}, {5, 5}}, ImageSizeAction -> 
+           "ResizeToFit"], LineIndent -> 0, StripOnInput -> False], {
+         FontFamily -> "Arial"}, Background -> Automatic, StripOnInput -> 
+         False], TraditionalForm]& ), 
+      InterpretationFunction :> (RowBox[{"LineLegend", "[", 
+         RowBox[{
+           RowBox[{"{", 
+             RowBox[{
+               RowBox[{"Directive", "[", 
+                 RowBox[{
+                   RowBox[{"PointSize", "[", "0.019444444444444445`", "]"}], 
+                   ",", 
+                   InterpretationBox[
+                    ButtonBox[
+                    TooltipBox[
+                    GraphicsBox[{{
+                    GrayLevel[0], 
+                    RectangleBox[{0, 0}]}, {
+                    GrayLevel[0], 
+                    RectangleBox[{1, -1}]}, {
+                    RGBColor[0.368417, 0.506779, 0.709798], 
+                    RectangleBox[{0, -1}, {2, 1}]}}, DefaultBaseStyle -> 
+                    "ColorSwatchGraphics", AspectRatio -> 1, Frame -> True, 
+                    FrameStyle -> 
+                    RGBColor[
+                    0.24561133333333335`, 0.3378526666666667, 
+                    0.4731986666666667], FrameTicks -> None, PlotRangePadding -> 
+                    None, ImageSize -> 
+                    Dynamic[{
+                    Automatic, 1.35 CurrentValue["FontCapHeight"]/
+                    AbsoluteCurrentValue[Magnification]}]], 
+                    "RGBColor[0.368417, 0.506779, 0.709798]"], Appearance -> 
+                    None, BaseStyle -> {}, BaselinePosition -> Baseline, 
+                    DefaultBaseStyle -> {}, ButtonFunction :> 
+                    With[{Typeset`box$ = EvaluationBox[]}, 
+                    If[
+                    Not[
+                    AbsoluteCurrentValue["Deployed"]], 
+                    SelectionMove[Typeset`box$, All, Expression]; 
+                    FrontEnd`Private`$ColorSelectorInitialAlpha = 1; 
+                    FrontEnd`Private`$ColorSelectorInitialColor = 
+                    RGBColor[0.368417, 0.506779, 0.709798]; 
+                    FrontEnd`Private`$ColorSelectorUseMakeBoxes = True; 
+                    MathLink`CallFrontEnd[
+                    FrontEnd`AttachCell[Typeset`box$, 
+                    FrontEndResource["RGBColorValueSelector"], {
+                    0, {Left, Bottom}}, {Left, Top}, 
+                    "ClosingActions" -> {
+                    "SelectionDeparture", "ParentChanged", 
+                    "EvaluatorQuit"}]]]], BaseStyle -> Inherited, Evaluator -> 
+                    Automatic, Method -> "Preemptive"], 
+                    RGBColor[0.368417, 0.506779, 0.709798], Editable -> False,
+                     Selectable -> False], ",", 
+                   RowBox[{"AbsoluteThickness", "[", "1.6`", "]"}]}], "]"}], 
+               ",", 
+               RowBox[{"Directive", "[", 
+                 RowBox[{
+                   RowBox[{"PointSize", "[", "0.019444444444444445`", "]"}], 
+                   ",", 
+                   InterpretationBox[
+                    ButtonBox[
+                    TooltipBox[
+                    GraphicsBox[{{
+                    GrayLevel[0], 
+                    RectangleBox[{0, 0}]}, {
+                    GrayLevel[0], 
+                    RectangleBox[{1, -1}]}, {
+                    RGBColor[0.880722, 0.611041, 0.142051], 
+                    RectangleBox[{0, -1}, {2, 1}]}}, DefaultBaseStyle -> 
+                    "ColorSwatchGraphics", AspectRatio -> 1, Frame -> True, 
+                    FrameStyle -> 
+                    RGBColor[
+                    0.587148, 0.40736066666666665`, 0.09470066666666668], 
+                    FrameTicks -> None, PlotRangePadding -> None, ImageSize -> 
+                    Dynamic[{
+                    Automatic, 1.35 CurrentValue["FontCapHeight"]/
+                    AbsoluteCurrentValue[Magnification]}]], 
+                    "RGBColor[0.880722, 0.611041, 0.142051]"], Appearance -> 
+                    None, BaseStyle -> {}, BaselinePosition -> Baseline, 
+                    DefaultBaseStyle -> {}, ButtonFunction :> 
+                    With[{Typeset`box$ = EvaluationBox[]}, 
+                    If[
+                    Not[
+                    AbsoluteCurrentValue["Deployed"]], 
+                    SelectionMove[Typeset`box$, All, Expression]; 
+                    FrontEnd`Private`$ColorSelectorInitialAlpha = 1; 
+                    FrontEnd`Private`$ColorSelectorInitialColor = 
+                    RGBColor[0.880722, 0.611041, 0.142051]; 
+                    FrontEnd`Private`$ColorSelectorUseMakeBoxes = True; 
+                    MathLink`CallFrontEnd[
+                    FrontEnd`AttachCell[Typeset`box$, 
+                    FrontEndResource["RGBColorValueSelector"], {
+                    0, {Left, Bottom}}, {Left, Top}, 
+                    "ClosingActions" -> {
+                    "SelectionDeparture", "ParentChanged", 
+                    "EvaluatorQuit"}]]]], BaseStyle -> Inherited, Evaluator -> 
+                    Automatic, Method -> "Preemptive"], 
+                    RGBColor[0.880722, 0.611041, 0.142051], Editable -> False,
+                     Selectable -> False], ",", 
+                   RowBox[{"AbsoluteThickness", "[", "1.6`", "]"}]}], "]"}]}],
+              "}"}], ",", 
+           RowBox[{"{", 
+             RowBox[{#, ",", #2}], "}"}], ",", 
+           RowBox[{"LegendMarkers", "\[Rule]", 
+             RowBox[{"{", 
+               RowBox[{
+                 RowBox[{"{", 
+                   RowBox[{"False", ",", "Automatic"}], "}"}], ",", 
+                 RowBox[{"{", 
+                   RowBox[{"False", ",", "Automatic"}], "}"}]}], "}"}]}], ",", 
+           RowBox[{"Joined", "\[Rule]", 
+             RowBox[{"{", 
+               RowBox[{"True", ",", "True"}], "}"}]}], ",", 
+           RowBox[{"LabelStyle", "\[Rule]", 
+             RowBox[{"{", "}"}]}], ",", 
+           RowBox[{"LegendLayout", "\[Rule]", "\"Column\""}]}], "]"}]& ), 
+      Editable -> True], TraditionalForm], TraditionalForm]},
+  "Legended",
+  DisplayFunction->(GridBox[{{
+      TagBox[
+       ItemBox[
+        PaneBox[
+         TagBox[#, "SkipImageSizeLevel"], Alignment -> {Center, Baseline}, 
+         BaselinePosition -> Baseline], DefaultBaseStyle -> "Labeled"], 
+       "SkipImageSizeLevel"], 
+      ItemBox[#2, DefaultBaseStyle -> "LabeledLabel"]}}, 
+    GridBoxAlignment -> {"Columns" -> {{Center}}, "Rows" -> {{Center}}}, 
+    AutoDelete -> False, GridBoxItemSize -> Automatic, 
+    BaselinePosition -> {1, 1}]& ),
+  Editable->True,
+  InterpretationFunction->(RowBox[{"Legended", "[", 
+     RowBox[{#, ",", 
+       RowBox[{"Placed", "[", 
+         RowBox[{#2, ",", "After"}], "]"}]}], "]"}]& )]], "Output",
+ CellChangeTimes->{3.729994657411662*^9, 3.730044473233201*^9, 
+  3.730044996801036*^9},ExpressionUUID->"ae7c4c8c-afa6-4fe1-81eb-\
+eecffc7121a4"]
+}, Open  ]],
+
+Cell["\<\
+This clearly shows that my implementation of the sieve of Sunduram  is faster \
+than the sieve of Eratosthenes. So from my implementation I would say with \
+proof that the sieve of Eratosthenes is faster than the sieve of Sunduram. 
+
+Here are the actual values that we got for each:\
+\>", "Text",
+ CellChangeTimes->{{3.729994673282467*^9, 3.729994754253874*^9}, {
+  3.729994785311614*^9, 3.729994814051175*^9}, {3.730032558981636*^9, 
+  3.7300325709723377`*^9}, {3.73004458742227*^9, 
+  3.7300446055798397`*^9}},ExpressionUUID->"192ff58d-6e6a-4f02-8e62-\
+d642d2d7aab8"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{"timingSunduram", "\[IndentingNewLine]", \
+"timingEratosthenes"}], "Input",
+ CellChangeTimes->{{3.730032573943173*^9, 
+  3.730032584725217*^9}},ExpressionUUID->"6da0464f-9e5c-47ce-8a3f-\
+fae4a8669ea9"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+  "0.000078`", ",", "0.000055`", ",", "0.000077`", ",", "0.000069`", ",", 
+   "0.000068`", ",", "0.000107`", ",", "0.000248`", ",", "0.000524`", ",", 
+   "0.001226`", ",", "0.002449`", ",", "0.005679`"}], "}"}]], "Output",
+ CellChangeTimes->{3.73003258696546*^9, 3.730044612936957*^9, 
+  3.730045009987294*^9},ExpressionUUID->"72e65271-c6a5-4e9c-a23f-\
+4db27d005971"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+  "0.0005`", ",", "0.000342`", ",", "0.000744`", ",", "0.001744`", ",", 
+   "0.003947`", ",", "0.0105`", ",", "0.021572`", ",", "0.049152`", ",", 
+   "0.119157`", ",", "0.302763`", ",", "0.86526`"}], "}"}]], "Output",
+ CellChangeTimes->{3.73003258696546*^9, 3.730044612936957*^9, 
+  3.730045010018712*^9},ExpressionUUID->"10555a69-64fd-41a1-b1bd-\
+6c5677ac8b65"]
+}, Open  ]],
+
+Cell["\<\
+And just for fun I will use the sieve of Sunduram to calculate primes for n \
+being 1 million. \
+\>", "Text",
+ CellChangeTimes->{{3.730044627473845*^9, 
+  3.7300446739380093`*^9}},ExpressionUUID->"f1bb5262-b9a3-4198-896a-\
+f6c81fc07ff3"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"Timing", "[", 
+    RowBox[{"sunduram", "[", "1000000", "]"}], "]"}], "[", 
+   RowBox[{"[", "1", "]"}], "]"}], "\[IndentingNewLine]"}]], "Input",
+ CellChangeTimes->{{3.730044675923978*^9, 3.730044726957262*^9}, {
+  3.730045025534686*^9, 
+  3.730045027931134*^9}},ExpressionUUID->"f6613529-653e-4e41-9e9c-\
+289abdbe886f"],
+
+Cell[BoxData["0.158766`"], "Output",
+ CellChangeTimes->{{3.730044685790043*^9, 3.730044728774654*^9}, 
+   3.7300449088177156`*^9, 
+   3.730045020474351*^9},ExpressionUUID->"7890be62-f7bc-4064-b580-\
+65f05bd2bac6"]
+}, Open  ]],
+
+Cell["\<\
+And that only took 0.15 seconds faster so I would say it is pretty fast. \
+\>", "Text",
+ CellChangeTimes->{{3.7300447309153633`*^9, 
+  3.730044764285427*^9}},ExpressionUUID->"37cda427-d228-416b-8f0c-\
+c007a36ddd48"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{Full, Full},
+WindowMargins->{{Automatic, 0}, {Automatic, 0}},
+Magnification:>2. Inherited,
+FrontEndVersion->"11.2 for Mac OS X x86 (32-bit, 64-bit Kernel) (September \
+10, 2017)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 333, 5, 316, "Title",ExpressionUUID->"cb957777-e1dc-410f-847b-712806b4d7de"],
+Cell[916, 29, 1170, 22, 294, "Text",ExpressionUUID->"98789f35-515f-4648-b124-313172e97e9a"],
+Cell[CellGroupData[{
+Cell[2111, 55, 142, 3, 134, "Section",ExpressionUUID->"78dff015-8d11-4698-acde-b1de9501aaad"],
+Cell[2256, 60, 783, 14, 384, "Text",ExpressionUUID->"8aa77735-ad50-4f87-9007-dc9676a7095a"],
+Cell[3042, 76, 3932, 93, 1025, "Input",ExpressionUUID->"053bf5df-8255-4532-ab07-5d143c36a120"],
+Cell[6977, 171, 224, 4, 69, "Text",ExpressionUUID->"8e403f66-23bb-44f1-be65-dd707350a43f"],
+Cell[CellGroupData[{
+Cell[7226, 179, 386, 7, 164, "Input",ExpressionUUID->"92d46102-d411-49df-8715-d053626569a8"],
+Cell[7615, 188, 269, 6, 89, "Output",ExpressionUUID->"30b2a149-46e9-4bb7-8919-fd6cd5f369fa"],
+Cell[7887, 196, 515, 10, 131, "Output",ExpressionUUID->"ea0be6c9-56cb-4c07-9d2d-1963edacdffe"],
+Cell[8405, 208, 781, 14, 172, "Output",ExpressionUUID->"fbd51aae-112d-4ad0-88d7-dc3c3980538b"]
+}, Open  ]],
+Cell[9201, 225, 439, 8, 114, "Text",ExpressionUUID->"abb52e14-f29d-42d3-aad8-ff73a087c36a"],
+Cell[9643, 235, 386, 11, 59, "Input",ExpressionUUID->"0d2f63ff-8724-410d-8139-179e5eb53797"],
+Cell[10032, 248, 196, 3, 69, "Text",ExpressionUUID->"3f790129-d6fc-4a9d-81a4-9257fa6954a4"],
+Cell[CellGroupData[{
+Cell[10253, 255, 297, 6, 164, "Input",ExpressionUUID->"ac597155-6f69-4254-9ccd-a511bad47be4"],
+Cell[10553, 263, 181, 3, 89, "Output",ExpressionUUID->"86424d91-a2c9-41b7-a3d6-b05f72c04ce9"],
+Cell[10737, 268, 184, 3, 89, "Output",ExpressionUUID->"156459d8-fd2a-4b99-a75c-9aa46cf3c140"],
+Cell[10924, 273, 181, 3, 123, "Output",ExpressionUUID->"ace6f2fa-9438-4f83-b156-35c8bd359b5e"]
+}, Open  ]],
+Cell[11120, 279, 325, 7, 114, "Text",ExpressionUUID->"9ed95b10-64d9-467f-aa61-9c9d2595f96b"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[11482, 291, 162, 3, 134, "Section",ExpressionUUID->"d42ea2e6-e01f-4886-904d-a1e1762f51bc"],
+Cell[11647, 296, 1252, 31, 384, "Text",ExpressionUUID->"96cb0077-bf4f-4f03-904f-ffacc42de509"],
+Cell[12902, 329, 4169, 93, 902, "Input",ExpressionUUID->"38003271-bd76-4be7-b784-a88b687c468a"],
+Cell[17074, 424, 207, 3, 69, "Text",ExpressionUUID->"177e35b3-b2f7-4991-817d-afd55ff3ced8"],
+Cell[CellGroupData[{
+Cell[17306, 431, 400, 7, 123, "Input",ExpressionUUID->"fa8bbe3e-4654-4e9e-8c23-914563dd97e4"],
+Cell[17709, 440, 442, 10, 89, "Output",ExpressionUUID->"ca92b0dd-8690-4d48-959b-d36fec950cb3"],
+Cell[18154, 452, 2807, 41, 541, "Output",ExpressionUUID->"14efca6b-2bad-4f95-a494-19931bea9554"]
+}, Open  ]],
+Cell[20976, 496, 487, 13, 249, "Text",ExpressionUUID->"d6f0aeaa-c22e-4d50-a31a-98029734e97f"],
+Cell[21466, 511, 456, 13, 81, "Input",ExpressionUUID->"af381833-739e-4057-bffd-c8ca9c44793f"],
+Cell[21925, 526, 198, 3, 69, "Text",ExpressionUUID->"6da30e1e-47db-4004-8685-40e897a3f611"],
+Cell[CellGroupData[{
+Cell[22148, 533, 297, 6, 164, "Input",ExpressionUUID->"52f910c6-7824-499b-b91b-87e081a7702c"],
+Cell[22448, 541, 261, 4, 89, "Output",ExpressionUUID->"d1219ab8-b589-4dc4-91f2-65f9c881e465"],
+Cell[22712, 547, 261, 4, 89, "Output",ExpressionUUID->"a3c73142-25dd-4ea3-a1ac-1094f0af2258"],
+Cell[22976, 553, 259, 4, 123, "Output",ExpressionUUID->"f73627ed-7e39-4b40-bf99-7d7229700fbd"]
+}, Open  ]],
+Cell[23250, 560, 256, 6, 114, "Text",ExpressionUUID->"2efcc06b-bf94-4562-a7df-f71ee776b937"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[23543, 571, 172, 3, 134, "Section",ExpressionUUID->"4feca245-44f5-4594-8ab4-2acc12cf057e"],
+Cell[23718, 576, 841, 21, 204, "Text",ExpressionUUID->"b90c3925-3f8b-4baf-93de-50c9409ea1de"],
+Cell[CellGroupData[{
+Cell[24584, 601, 848, 19, 205, "Input",ExpressionUUID->"21b24abc-5bfe-4d71-b934-1a7c95ba68f4"],
+Cell[25435, 622, 1493, 39, 511, "Output",ExpressionUUID->"3367d5f3-d549-46cd-a158-e6e293c255a9"]
+}, Open  ]],
+Cell[26943, 664, 214, 4, 69, "Text",ExpressionUUID->"96a288f1-dc96-48cf-93e7-c4dfc3be19a2"],
+Cell[27160, 670, 345, 9, 81, "Input",ExpressionUUID->"df1a608c-9967-4f15-9170-5d0c761f4cf6"],
+Cell[CellGroupData[{
+Cell[27530, 683, 251, 5, 81, "Input",ExpressionUUID->"ac7cad6b-5640-4be4-b2fd-6e80ce25b814"],
+Cell[27784, 690, 1487, 40, 497, "Output",ExpressionUUID->"46937c66-dd69-4832-b3e4-5ed552e546b7"]
+}, Open  ]],
+Cell[29286, 733, 294, 7, 69, "Text",ExpressionUUID->"2c30ff48-bd92-44cf-a6f6-e36738072f86"],
+Cell[CellGroupData[{
+Cell[29605, 744, 420, 11, 123, "Input",ExpressionUUID->"ac3eac15-e0d2-46da-9ca6-cb8d96d9c3d0"],
+Cell[30028, 757, 12007, 249, 506, "Output",ExpressionUUID->"ae7c4c8c-afa6-4fe1-81eb-eecffc7121a4"]
+}, Open  ]],
+Cell[42050, 1009, 579, 11, 249, "Text",ExpressionUUID->"192ff58d-6e6a-4f02-8e62-d642d2d7aab8"],
+Cell[CellGroupData[{
+Cell[42654, 1024, 215, 4, 123, "Input",ExpressionUUID->"6da0464f-9e5c-47ce-8a3f-fae4a8669ea9"],
+Cell[42872, 1030, 407, 8, 131, "Output",ExpressionUUID->"72e65271-c6a5-4e9c-a23f-4db27d005971"],
+Cell[43282, 1040, 402, 8, 131, "Output",ExpressionUUID->"10555a69-64fd-41a1-b1bd-6c5677ac8b65"]
+}, Open  ]],
+Cell[43699, 1051, 247, 6, 69, "Text",ExpressionUUID->"f1bb5262-b9a3-4198-896a-f6c81fc07ff3"],
+Cell[CellGroupData[{
+Cell[43971, 1061, 366, 9, 101, "Input",ExpressionUUID->"f6613529-653e-4e41-9e9c-289abdbe886f"],
+Cell[44340, 1072, 213, 4, 89, "Output",ExpressionUUID->"7890be62-f7bc-4064-b580-65f05bd2bac6"]
+}, Open  ]],
+Cell[44568, 1079, 225, 5, 69, "Text",ExpressionUUID->"37cda427-d228-416b-8f0c-c007a36ddd48"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+

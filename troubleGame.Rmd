@@ -1,0 +1,175 @@
+---
+title: "The Trouble Game" 
+output: html_document
+author: Donart Tota
+---
+
+```
+In the game Trouble the goal is to move a bunch of markers from a starting point all the way to the ending point. Ignoring some subtleties of the game, the basic move is very simple:
+  
+  - You roll a standard 6-sided die.
+  - You move your marker the number of spaces equal to the value on the die.
+  - If you rolled a six, you roll and move again. You keep doing this as a long as you roll sixes.
+
+For example, if you roll a 3, then you move 3 spaces. If you roll a 6 followed by a 3, then you move 6 + 3 = 9 spaces. If you roll a 6, another 6, and then a 3, then you move 6 + 6 + 3 = 15 spaces.
+```
+
+## Creating a simulation of trouble using R
+
+In this section we will create a all functions that we need to simulate a game of trouble. 
+
+First function we will call move and this function takes a variable "n" which will be used to decided the number that we get a chance for a second roll. I am doing this because the lab requires that we later simulate games where we use different reroll values 
+```{r}
+move <- function(n){
+  roll2 <- sample(1:6,1)                          # Roll the die using smaple
+  total <- roll2                                  # Add value to the total
+
+  while (roll2==n) {                              # If the reroll value is rolled, Roll again 
+    roll2 <- sample(1:6, 1)
+    total <- total + roll2
+  }
+  total
+}
+```
+
+Let's quickly check if this function works. This function calls function move 6 times and here we are rolling again at 6. 
+```{r}
+vec1 <- c()
+for(i in 1:6){
+  ret <- move(6)
+  vec1 <- c(vec1, ret)
+}
+
+vec1
+
+```
+It seems to be working fine. 
+
+Now we calculate the average length of a move. In this function we roll 100000 times and we add up the roll values for each move. Then we divide the sum by the number of moves. 
+
+```{r}
+avgLength <- function(n){   
+  sum <- 0                 
+  M <- 100000               
+  for(i in 1:M){
+    sum <- sum + move(n)     
+  }
+  sum/M                     
+}
+```
+
+Now let's see what the average move length is for 6. 
+```{r}
+avgLength(6)
+```
+It seems to be 4.2
+
+
+## Finding the average length for each reroll value. 
+
+In this part we have to find the average length of a move when we change the reroll value. We can do this by creating a forloop and calling the function avgLength 6 times with the variable being 1-6. 
+
+```{r}
+vec2 <- c()
+for(i in 1:6){
+  ret <- avgLength(i)
+  vec2 <- c(vec2, ret)
+}
+
+vec2
+```
+All the values seem to be around 4.2 so we can say that the average length of moves is 4.2 no matter what the reroll value is. 
+
+## Better to reroll at a large number or small number ?
+
+In this part we will try a bunch of games and see if the reroll value affects if games are won or lost. 
+In the function bellow we will generate 60000 games where we have a reroll value of A and one of B and see which one wins more
+```{r}
+valueVSvaue <- function(firstValue, secondValue){
+  vec2<- c()
+  for(i in 1:60000){
+    x<- move(firstValue)                    # Call move with roll again value at first value
+    y<- move(secondValue)                   # Call move with roll again value at second vaue
+    if(x != y){                             # Don't count the ties 
+      vec2 <- c(vec2,x>y)   # Add true if move(first value) beats move(second value), otherwise add false 
+    }
+  }
+  return(vec2)
+}
+```
+
+Let's see which one wins between 1 and 6. 
+```{r}
+vec2 <- valueVSvaue(1, 6)
+mean(vec2)
+```
+It seems that when we reroll at 1 we win more times than when we reroll at 6. 
+
+Now let's try and see how 1 roll again value does against other numbers. In this function we will play the game where we reroll at 1 vs all the numbers 2 through 6. and we see how 1 does against those reroll values. 
+```{r}
+vec3 <- c()
+for(i in 2:6){
+  ret <- mean(valueVSvaue(1, i))
+  vec3 <- c(vec3, ret)
+}
+
+vec3
+```
+
+We see that as the number that rerolls against 1 gets bigger the chances for 1 to win get higher. We can try this for every number and see how two does against larger numbers as well. 
+
+```{r}
+vec4 <- c()
+for(i in 3:6){
+  ret <- mean(valueVSvaue(2, i))
+  vec4 <- c(vec4, ret)
+}
+
+vec4
+```
+We get simialr results if we compare 2 against larger numbers. And just to be certain I will try 3 against large numbers and 4 and 5 against large numbers. 
+```{r}
+# Reroll at 3 
+vec4 <- c()
+for(i in 4:6){
+  ret <- mean(valueVSvaue(3, i))
+  vec4 <- c(vec4, ret)
+}
+
+vec4
+```
+
+```{r}
+# Reroll at 4. 
+vec4 <- c()
+for(i in 5:6){
+  ret <- mean(valueVSvaue(4, i))
+  vec4 <- c(vec4, ret)
+}
+
+vec4
+```
+
+```{r}
+# Reroll at 5. 
+ret <- mean(valueVSvaue(5, 6))
+ret
+```
+From all these simulations we see that when we roll again at a smaller value we have better chances of winning that when we roll again at a large value. 
+
+
+## Extra part
+
+### The average length of each move
+If we roll again at a certain number the expected value will be:
+```{r}
+1/6+2/6+3/6+4/6+5/6+6/6+1/36+2/36+3/36+4/36+5/36+6/36 #+...1/6^n... 6/6^n 
+```
+The limit of the expersion above is 4.2. 
+
+### Why 1 is better than 6. 
+If we roll again at 1 our chances of wining if we get 1 go from 0% to around 50%. This is because if you reroll at one and you get one you will always beat 1 and 2, and almost always beat 3, and a good chance of beating 4. 
+
+On the other hand when you roll again at 6 your chances of wining if you get a 6 go from around 84% to almost 100%. Not as drastic of an increase as if we roll again at 1. 
+
+
